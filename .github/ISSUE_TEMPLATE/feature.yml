@@ -1,0 +1,13 @@
+name: Feature request
+description: Suggest a measurement or antenna experiment improvement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Which measurement decision would this help you make?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour and data source
