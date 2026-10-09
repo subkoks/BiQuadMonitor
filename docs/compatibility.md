@@ -1,6 +1,6 @@
 # Compatibility and evidence
 
-BiQuad Monitor 0.2.0 is a development preview. Distinguish what the code targets from what has been exercised on physical hardware.
+BiQuad Monitor 0.2.0 is an unsigned Universal release. The owner chose distribution without Developer ID signing or notarization on 2026-10-09. Distinguish what the code targets from what has been exercised on physical hardware.
 
 ## Router adapter
 
@@ -28,7 +28,7 @@ Four signal readings are parsed with explicit missing-value and range checks. RS
 | Apple Silicon `arm64` | Universal slice and hosted arm64 unit/native UI execution verified; user-device installation and router acceptance remain separate |
 | macOS 13 | Declared minimum deployment target; a build targeting 13 does not prove runtime acceptance on 13 |
 | Newer macOS | Subject to OS-specific Local Network permission and clean-launch verification |
-| Developer ID / notarization | Not part of the ad-hoc preview; required before a trusted distribution release |
+| Developer ID / notarization | Not provided in 0.2.0; this release is explicitly unsigned |
 
 CI is configured to test Intel and Apple Silicon separately and build a Universal preview. A workflow file is not passing-run evidence. Check the jobs for the exact commit under review, including native interaction results and preserved reports.
 
@@ -65,3 +65,9 @@ The same commit passed Swift, Python and Actions [CodeQL analysis](https://githu
 - Developer ID signing, notarization and downloaded-app installation for a distribution release.
 
 Offline tests, fixtures, rendered demo images and cross-compilation are useful evidence for their own scope. They do not replace these acceptance checks. Record results against the candidate commit using the [release checklist](release.md).
+
+## Owner acceptance — 2026-10-09
+
+The owner confirmed normal 0.2.0 use: correct live readings, saved antenna trials surviving restart, and sleep/network recovery. This is owner-reported physical-device acceptance, separate from hosted automated results. The source changes in release preparation affect workflow updates, documentation and distribution labelling; the router adapter and measurement logic are unchanged.
+
+Minimum macOS 13 runtime, clean downloaded-app launch, Apple Silicon user-device/router acceptance and an eight-hour instrumented soak remain unverified. These are disclosed limitations of the unsigned release, not passing checks. No Apple signing or notarization credentials were accessed.

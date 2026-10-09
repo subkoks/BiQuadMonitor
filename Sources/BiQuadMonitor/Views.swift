@@ -187,7 +187,7 @@ struct WorkspaceView: View {
                 Text("CUDY LT500 V2").font(.system(size: 9, weight: .semibold, design: .monospaced)).foregroundStyle(.secondary)
                 IconButton("Compact tuner", systemImage: "rectangle.compress.vertical") { monitor.openCompact?() }
                 IconButton("Settings", systemImage: "gearshape") { monitor.settings = true }
-                Text("0.2.0 · Preview").font(.caption2).foregroundStyle(.tertiary)
+                Text("0.2.0 · " + ((Bundle.main.object(forInfoDictionaryKey: "BiQuadDistribution") as? String)?.hasPrefix("unsigned release") == true ? "Unsigned" : "Preview")).font(.caption2).foregroundStyle(.tertiary)
             }.buttonStyle(.plain).font(.caption).padding(14)
         }.padding(.horizontal, 8).background(Color.black.opacity(0.08))
     }
