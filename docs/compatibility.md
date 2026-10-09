@@ -6,7 +6,7 @@ BiQuad Monitor 0.2.0 is a development preview. Distinguish what the code targets
 
 | Router / firmware | Evidence |
 | --- | --- |
-| Cudy LT500 V2, `2.4.16-20250804-150319` | The 0.1.4 baseline completed real login and repeated cellular readings on this device. The 0.2.0 candidate still requires its own live acceptance run. |
+| Cudy LT500 V2, `2.4.16-20250804-150319` | The 0.1.4 baseline and packaged 0.2.0 commit `b1e4454` completed real login and repeated readings on this device. Extended acceptance remains below. |
 | Other Cudy models, firmware or localized interfaces | Unverified. Do not infer support from a similar admin page. |
 | GL.iNet / Glint, Huawei, generic OpenWrt | No adapter provided. |
 
@@ -25,7 +25,7 @@ Four signal readings are parsed with explicit missing-value and range checks. RS
 | Target | Status / boundary |
 | --- | --- |
 | Intel `x86_64` | Native implementation and local development target |
-| Apple Silicon `arm64` | Included in the default Universal build; physical execution must be verified separately |
+| Apple Silicon `arm64` | Universal slice and hosted arm64 unit/native UI execution verified; user-device installation and router acceptance remain separate |
 | macOS 13 | Declared minimum deployment target; a build targeting 13 does not prove runtime acceptance on 13 |
 | Newer macOS | Subject to OS-specific Local Network permission and clean-launch verification |
 | Developer ID / notarization | Not part of the ad-hoc preview; required before a trusted distribution release |
@@ -41,11 +41,23 @@ The package uses system SwiftUI, AppKit, Swift Charts and SQLite. Full Xcode and
 - **PASS:** native app and XCUITest target build-for-testing.
 - **TEST_INVALID:** local XCUITest interaction execution timed out while macOS enabled automation mode. This is not a passing interaction test. Hosted CI results must be checked separately.
 
+## Hosted execution evidence
+
+The [CI run for `b1e4454`](https://github.com/subkoks/BiQuadMonitor/actions/runs/37838502054) passed on both Intel (`macos-26-intel`) and Apple Silicon (`macos-26`) using Xcode 26.6. Each architecture passed the 45 offline tests, window/coordinator smoke and the native XCUITest trial/settings/pause flow. The Universal preview job also passed.
+
+These hosted native UI results resolve the interaction-test evidence gap for that commit; they do not grant Local Network access on a user’s Mac or exercise a physical router. Check subsequent commits separately.
+
+## Packaged live check — 2026-10-09
+
+The clean-source Universal preview for `b1e4454` authenticated with the physical LT500 and returned all four metrics through eight timed updates at five-second intervals. The read-only diagnostic used isolated in-memory measurement storage and did not save credentials or change router settings. This confirms real login and polling for that artifact; it does not establish the longer acceptance gates below.
+
+The same commit passed Swift, Python and Actions [CodeQL analysis](https://github.com/subkoks/BiQuadMonitor/actions/runs/37838502002). No open CodeQL findings were returned for that branch at verification time.
+
 ## Acceptance still required for this candidate
 
-- Repeated readings from the physical LT500 through the packaged app, compared with its status page.
+- Side-by-side comparison with the router status page and two real antenna trials through the normal interface, including restart and export.
 - Finder launch and Local Network permission, including a clean installation context.
-- Physical Apple Silicon execution and minimum macOS 13 runtime acceptance.
+- Apple Silicon user-device installation and minimum macOS 13 runtime acceptance.
 - An eight-hour collection run with responsive UI, bounded display memory and complete export.
 - Sleep/wake, network loss/recovery, login expiry and display reconnect behavior in real usage.
 - Developer ID signing, notarization and downloaded-app installation for a distribution release.

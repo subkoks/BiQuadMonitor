@@ -35,5 +35,7 @@
 	<true/>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Reads cellular signal metrics from your Cudy router on your local network.</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 </dict>
 </plist>

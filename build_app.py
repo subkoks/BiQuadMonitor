@@ -30,6 +30,7 @@ def main() -> None:
     (contents / "Resources").mkdir(exist_ok=True)
     executable = contents / "MacOS" / "BiQuadMonitor"
     shutil.copy2(binary_dir / "BiQuadMonitor", executable)
+    shutil.copy2(ROOT / "Resources/AppIcon.icns", contents / "Resources/AppIcon.icns")
     commit = run("git", "rev-parse", "HEAD", capture=True)
     dirty = bool(run("git", "status", "--porcelain", "--untracked-files=no", capture=True))
     info = {
@@ -37,6 +38,7 @@ def main() -> None:
         "CFBundleIdentifier": "local.blackterminal.BiQuadMonitor",
         "CFBundleVersion": "6", "CFBundleShortVersionString": VERSION,
         "CFBundleExecutable": "BiQuadMonitor", "CFBundlePackageType": "APPL",
+        "CFBundleIconFile": "AppIcon",
         "LSUIElement": True, "LSMinimumSystemVersion": "13.0",
         "LSMultipleInstancesProhibited": True, "NSHighResolutionCapable": True,
         "NSLocalNetworkUsageDescription": "Reads cellular signal metrics from your Cudy router on your local network.",

@@ -85,9 +85,19 @@
 			"name" = "Products";
 			"sourceTree" = "<group>";
 		};
+		"4D6FC5A1736DCA577CF68A90" = {
+			"isa" = "PBXFileReference";
+			"lastKnownFileType" = "image.icns";
+			"path" = "Resources/AppIcon.icns";
+			"sourceTree" = "SOURCE_ROOT";
+		};
+		"01BCCC5587056415CE68AF04" = {
+			"isa" = "PBXBuildFile";
+			"fileRef" = "4D6FC5A1736DCA577CF68A90";
+		};
 		"44CB005EE2E65D9CC817B0A0" = {
 			"isa" = "PBXGroup";
-			"children" = ("0D04BFEB7D64B71C74FC925C", "791C91B03E2E5042A74623CE", "4EDC8BFAFC6BD936B849F38C");
+			"children" = ("0D04BFEB7D64B71C74FC925C", "791C91B03E2E5042A74623CE", "4D6FC5A1736DCA577CF68A90", "4EDC8BFAFC6BD936B849F38C");
 			"sourceTree" = "<group>";
 		};
 		"BE9AD54601022DCC6177AF8B" = {
@@ -158,6 +168,12 @@
 			"defaultConfigurationIsVisible" = "0";
 			"defaultConfigurationName" = "Release";
 		};
+		"F9187E824FE171A6F0EFAE28" = {
+			"isa" = "PBXResourcesBuildPhase";
+			"files" = ("01BCCC5587056415CE68AF04");
+			"buildActionMask" = "2147483647";
+			"runOnlyForDeploymentPostprocessing" = "0";
+		};
 		"AFF87A50730392B6633ACECE" = {
 			"isa" = "PBXSourcesBuildPhase";
 			"files" = ("39BBAA943E2FBF2E9E8A5B24", "3199E2CF9010D1880A99158B", "17DD04DE48DE64A4F295EB07", "F57183E5B61819E78EEEB69D");
@@ -178,7 +194,7 @@
 			"productReference" = "681C948D238C526E9E3424E0";
 			"productType" = "com.apple.product-type.application";
 			"packageProductDependencies" = ("48B7D959D5AF7D456A2A69F1", "E7BEE99AAB24A4C7D8215AE1");
-			"buildPhases" = ("AFF87A50730392B6633ACECE", "7A4C2DC8FCA657188648E999");
+			"buildPhases" = ("F9187E824FE171A6F0EFAE28", "AFF87A50730392B6633ACECE", "7A4C2DC8FCA657188648E999");
 			"buildRules" = ();
 			"dependencies" = ();
 		};
