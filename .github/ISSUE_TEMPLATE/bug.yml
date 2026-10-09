@@ -1,0 +1,27 @@
+name: Bug report
+description: Report an app, router adapter or installation problem
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach router passwords, backups, full admin-page HTML, SIM identifiers or private logs.
+  - type: input
+    id: versions
+    attributes:
+      label: App, macOS and CPU versions
+    validations:
+      required: true
+  - type: input
+    id: router
+    attributes:
+      label: Router model and firmware (if relevant)
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Steps, expected behaviour and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: safe-error
+    attributes:
+      label: Safe app error message or screenshot with personal data hidden

@@ -1,0 +1,69 @@
+name: CI
+on:
+  push:
+    branches: [main, 'feat/**', 'fix/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    name: Native tests (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-26-intel
+            arch: x86_64
+          - runner: macos-26
+            arch: arm64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          test "$(uname -m)" = '${{ matrix.arch }}'
+      - name: Validate source and native behaviour
+        run: python3 scripts/check.py --ui
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: checks-${{ matrix.arch }}
+          path: dist/checks/
+          retention-days: 7
+  universal:
+    name: Universal preview
+    runs-on: macos-26-intel
+    timeout-minutes: 20
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: python3 scripts/publication_check.py
+      - run: python3 build_app.py
+      - name: Package preview
+        run: |
+          ditto -c -k --keepParent 'dist/preview/BiQuad Monitor.app' dist/preview/BiQuad-Monitor-0.2.0-universal-preview.zip
+          python3 scripts/publication_check.py --archive dist/preview/BiQuad-Monitor-0.2.0-universal-preview.zip
+          shasum -a 256 dist/preview/BiQuad-Monitor-0.2.0-universal-preview.zip > dist/preview/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: universal-development-preview
+          path: |
+            dist/preview/*.zip
+            dist/preview/build.json
+            dist/preview/SHA256SUMS
+          retention-days: 7

@@ -1,44 +1,63 @@
 # BiQuad Monitor
 
-Native, local macOS menu-bar monitor for antenna experiments with a Cudy LT500. Built for Intel macOS 13+ using Swift, SwiftUI and AppKit, with no third-party runtime dependencies.
+A native macOS menu-bar monitor and antenna experiment workspace for supported Cudy cellular routers. Read SINR, RSRQ, RSRP and RSSI directly from the router, record antenna trials, and compare saved measurements.
 
-## Run
+**0.2.0 is a development preview.** It builds for Intel and Apple Silicon as a Universal app. The local build is ad-hoc signed, not notarized; current device and platform validation is described in [Compatibility](docs/compatibility.md).
 
-Run `python3 build_app.py`, then open `dist/BiQuad Monitor 0.1.4.app`. Click **LTE · Setup**, then **Settings**. Keep router IP `192.168.10.1`, enter your router's **web admin password**, and click **Connect**. Allow local-network access if macOS asks. The app signs in using the router's web login, not SSH. You can choose to remember the password in this Mac's Keychain; otherwise it is used for the current login only. Open Settings and Connect again after a session expires or the app restarts. Nothing accesses browser passwords or cookies.
+```text
+LTE BAND 3 | SINR 8 | RSRQ −9 | RSRP −96 | RSSI 23
+```
 
-Menu labels: **S** = SINR, **Q** = RSRQ, **P** = RSRP, **R** = RSSI. The dashboard window displays all four metrics, the last 60 samples as sparklines, averages over the last 60 seconds, LTE band and cell ID. Default polling is every five seconds, with no overlapping requests. On failure the menu says Offline, and the last values remain grey with their last-update state; they are not presented as live. RSSI is kept in the router's original units: positive values such as 24 are labeled **raw index**, negative readings are labeled **dBm**. Unknown or malformed readings appear as a dash.
+The numbers above are an example. RSSI `23` is the Cudy's **raw index**, not dBm.
 
-## Antenna comparisons
+## What it does
 
-Name the antenna position, click **New trial**, then allow at least 60 seconds to settle. **Set reference** captures the current averages. Adjust the antenna and watch the averages and reference differences. Comparison is suppressed when band, cell or RSSI units change. New trial clears the in-memory readings. **Export CSV** saves the current trial's last 720 samples (one hour at the default interval). Export before starting another trial. Demo readings are labeled in the interface and CSV. Higher values mean stronger power or better signal quality, but throughput can also depend on network load and other conditions. Prioritize SINR and compare RSRQ/RSRP as well.
+- **Compact tuner:** large SINR reading, all four metrics, 60-second means, trial progress, pause/resume, and an optional floating window.
+- **Signal workspace:** four linked history charts, time-range controls, radio context, and timestamped observations. Missing samples and connection gaps break the lines.
+- **Antenna Lab:** separate settling and recording periods; named trials with orientation and notes; reference comparisons using medians, P10–P90 and interquartile range. Changes are shown only for matching, known band/cell/units.
+- **Local history:** SQLite sessions survive restarts. Experiment sessions are pinned automatically. Cleanup of older, closed, unpinned sessions is an explicit action.
+- **CSV and JSON export:** every stored sample in a selected session, including trial phases and events. Cell identifiers and names/notes are excluded by default.
+- **Personalization:** full, compact or custom menu labels; dark, light or system appearance; optional SINR target sound.
 
-## Scope and security
+Demo and rendered preview images use **simulated data**. They demonstrate the interface, not reception or router compatibility.
 
-Only a private IPv4 router address is accepted. No cloud, telemetry, router-side installation, AT commands, SMS access or configuration writes. The only POST is the login form; monitoring uses GET on the cellular status page. The password uses the SHA-256 challenge flow seen in LT500 firmware 2.4.16; older plain-password LuCI forms are supported too. HTTP traffic is unencrypted on the LAN, including authenticated readings and login material. HTTPS is optional and requires a certificate trusted by macOS; certificate verification is never disabled. Cross-origin redirects are blocked. Sessions use ephemeral cookies and no disk cache. Raw responses, SIM identifiers and passwords are never logged or exported. No launch-at-login service is installed.
+![Signal workspace with simulated readings](docs/screenshots/workspace-demo.png)
 
-## Validation and limitations
+[View the compact tuner](docs/screenshots/compact-demo.png). Both images use simulated data.
 
-`swift test` tests HTML parsing, missing values, units, numeric ranges, login request encoding and local address validation. `python3 build_app.py` builds and ad-hoc signs the app locally. The app is not notarized or App Store distributed. Use **Demo** in Settings to preview simulated readings without connecting or accessing Keychain.
+## Build and connect
 
-Live authentication and repeated readings were verified on the user's LT500 V2 with firmware 2.4.16-20250804-150319 on 2026-10-07. The app reads `/cgi-bin/luci/admin/network/gcom/status?detail=1&iface=4g`, the same detailed fragment loaded by the browser. The parent `/gcom?iface=4g` page contains only tabs and a JavaScript loader; it cannot be parsed as a signal table. Other firmware versions or localized labels may require an adapter. Missing readings fail explicitly instead of inventing metrics.
+Install full Xcode with its macOS SDK, select it as the active developer directory, and have Python 3 available. Then, from this repository:
 
-Protocol research: Cudy's own login JavaScript and [community Cudy integration](https://github.com/usersaynoso/ha-cudy-router). This app is an independent Swift implementation; no third-party code is bundled. Antenna reference supplied by the user: [Double BiQuad calculator](https://buildyourownantenna.blogspot.com/2014/07/double-biquad-antenna-calculator.html) (the page could not be fetched during this build).
+```sh
+python3 build_app.py
+open 'dist/preview/BiQuad Monitor.app'
+```
 
-## 0.1.4: verified connection repair
+The default build contains both `x86_64` and `arm64` slices. For a faster build on the current Mac, use `python3 build_app.py --arch native`. Build provenance is written to `dist/preview/build.json`.
 
-The previous build successfully signed in but requested the empty parent page instead of the detailed cellular fragment. This caused the exact error `HTTP 200, HTML; raw metric labels: none. Rows: 0`. The detailed status endpoint also requires `detail=1`; without it the router sends a summary without the four signal readings.
+In **Settings → Router**, enter the router's private IPv4 address and web-admin password. The usual address for the tested setup is `192.168.10.1`. Match HTTP/HTTPS to the working router admin page; HTTPS requires a trusted certificate. Click **Connect** and allow Local Network access if macOS asks. Wi-Fi on the router's LAN is sufficient; an Ethernet cable is optional.
 
-A transport regression test reproduced that exact error before the endpoint fix and passes afterward. The test fixture preserves only the four metric rows from the real response, including the empty leading column and duplicate desktop/mobile paragraphs. It contains no passwords, session cookies, SIM identifiers or other router configuration. There are 27 passing tests covering the transport request, parsing, session expiry, safe error messages, login encoding, address validation and window geometry.
+Click the menu-bar readings to open the compact tuner. With an app window active, **⌘1** opens the tuner, **⌘2** opens the workspace, and **⌘,** opens Settings. Choose **Demo** in Settings to try the interface without a router.
 
-The packaged native app completed eight live readings through its normal login, timer and dashboard path at five-second intervals. All four metrics were present; SINR varied between 6 and 12 dB, with RSRQ −9 dB, RSRP −96 dBm and RSSI 23 (raw index). These are observations from that run, not expected fixed values. The native dashboard was captured and inspected. Release build, ad-hoc signature and Info.plist validation passed.
+See the [User guide](docs/user-guide.md) for trials, exports and connection troubleshooting.
 
-The dashboard is now 400 × 530 points, with standard draggable title bars, screen-boundary recovery and scrollable content. Menu-bar readings omit unnecessary decimal zeros. No router configuration, firmware or backup changes were required. Older app builds and source recovery copies remain available.
+## Data and access
 
-### Developer checks
+BiQuad Monitor uses the router's web login and cellular status endpoint. Monitoring changes no router settings and sends no SSH, AT or SMS commands. Password storage in this Mac's Keychain is optional. Browser passwords and browser sessions are not accessed.
 
-- `swift test` runs the deterministic offline tests; no router credentials are needed.
-- `python3 build_app.py` builds the versioned app. The provided app is already built.
-- Run the packaged executable with `--ui-smoke-test` to verify off-screen window recovery; it returns a nonzero exit status on failure.
-- `--live-smoke-test` is an explicit live acceptance check against `http://192.168.10.1`. Supply the password on standard input through a pipe, never as a command-line argument or environment variable. It exercises normal connection and timed polling, prints only the four signal readings, and exits after eight successful updates. It does not read or modify Keychain or saved preferences. Optional `--render-live <path>` captures only the app's own dashboard; `--keep-connected` leaves the verified session running afterward. These diagnostic flags are not required for ordinary use.
+Measurements stay on this Mac in `~/Library/Application Support/BiQuadMonitor/measurements.sqlite`. There is no cloud service or telemetry. HTTP is unencrypted on the LAN; HTTPS certificate verification is always enabled. Read the [Security and privacy notes](SECURITY.md) before sharing diagnostics or exports.
 
-The supplied router backup can contain credentials. Keep it private; it is not required to build or run the app and is not included in the app bundle.
+## Development
+
+```sh
+swift test
+python3 scripts/check.py
+python3 scripts/check.py --ui
+```
+
+The first command runs offline unit, transport and storage tests. The check runner adds source-publication and window/coordinator checks; `--ui` adds native XCUITest interaction checks and requires a usable macOS GUI session. Passing offline checks does not establish physical-router, Finder permission, or hardware acceptance.
+
+The code uses SwiftUI, AppKit, Swift Charts and system SQLite, with no third-party runtime packages. [Contributing](CONTRIBUTING.md), [Codex + GitHub automation](docs/automation.md), and the [release checklist](docs/release.md) describe the workflow.
+
+Independent project, unaffiliated with Cudy. Source is available under the [MIT License](LICENSE).

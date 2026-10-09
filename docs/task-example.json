@@ -1,0 +1,8 @@
+{
+  "id": "document-comparison",
+  "approved": false,
+  "goal": "Improve the user guide explanation of band and cell matching during antenna comparisons.",
+  "allowedPaths": ["docs/user-guide.md"],
+  "acceptance": "The guide explains matching units, settling exclusion and missing measurements; the deterministic checks pass.",
+  "maxSeconds": 600
+}

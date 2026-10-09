@@ -13,7 +13,13 @@ final class RedirectGuard: NSObject, URLSessionTaskDelegate {
     }
 }
 
-@MainActor final class RouterClient {
+protocol RouterConnection: Sendable {
+    func login(password: String) async throws -> SignalSample
+    func poll() async throws -> SignalSample
+    func close()
+}
+
+actor RouterClient: RouterConnection {
     private let base: URL
     private let session: URLSession
     private var responseSummary = ""
@@ -28,7 +34,7 @@ final class RedirectGuard: NSObject, URLSessionTaskDelegate {
         config.connectionProxyDictionary = [:]
         session = URLSession(configuration: config, delegate: RedirectGuard(base: base), delegateQueue: nil)
     }
-    func close() { session.invalidateAndCancel() }
+    nonisolated func close() { session.invalidateAndCancel() }
     func probePublicLogin() async throws {
         let html = try await request("/cgi-bin/luci/")
         print("Public login form: \(RouterHTML.isLogin(html) ? "present" : "absent"); \(RouterHTML.structureSummary(html))")
@@ -44,7 +50,20 @@ final class RedirectGuard: NSObject, URLSessionTaskDelegate {
             request.setValue(base.absoluteString + "/cgi-bin/luci/", forHTTPHeaderField: "Referer")
         }
         let data: Data; let response: URLResponse
-        do { (data, response) = try await session.data(for: request) } catch { throw MonitorError.network(error) }
+        do {
+            let (bytes, received) = try await session.bytes(for: request)
+            response = received
+            guard response.expectedContentLength <= 2_000_000 else { bytes.task.cancel(); throw MonitorError.format }
+            var buffer = Data()
+            buffer.reserveCapacity(min(64_000, max(0, Int(response.expectedContentLength))))
+            for try await byte in bytes {
+                guard buffer.count < 2_000_000 else { bytes.task.cancel(); throw MonitorError.format }
+                buffer.append(byte)
+            }
+            data = buffer
+        } catch let error as MonitorError { throw error }
+        catch is CancellationError { throw CancellationError() }
+        catch { throw MonitorError.network(error) }
         guard let http = response as? HTTPURLResponse else { throw MonitorError.transport }
         guard data.count <= 2_000_000 else { throw MonitorError.format }
         // LuCI serves its public login form with HTTP 403.

@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title description">
+  <title id="title">BiQuad Monitor — proposed native workspace and compact tuner</title>
+  <desc id="description">Original design concept using synthetic measurements. Warm dark surfaces, an orange accent, a sidebar, a measurement strip, two time charts, an inspector, and a separate compact tuner. This is a static review illustration, not the implemented application.</desc>
+  <defs>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; fill: #f3f1ed; }
+      .mono { font-family: 'SF Mono', Menlo, monospace; }
+      .secondary { fill: #b2aba4; }
+      .muted { fill: #938d86; }
+      .orange { fill: #ef7a3c; }
+      .green { fill: #abc794; }
+      .cyan { fill: #8ec9d2; }
+      .rule { stroke: #3a3734; stroke-width: 1; }
+      .grid { stroke: #302e2b; stroke-width: 1; stroke-dasharray: 3 5; }
+      .label { font-size: 12px; letter-spacing: 1px; }
+      .small { font-size: 13px; }
+      .body { font-size: 15px; }
+    </style>
+  </defs>
+  <rect width="1600" height="1100" fill="#0d0d0c"/>
+  <text x="48" y="46" class="mono orange label">BIQUAD MONITOR / DESIGN PROPOSAL 01</text>
+  <text x="48" y="91" font-size="32" font-weight="600">A clearer view of your cellular signal.</text>
+  <text x="1552" y="48" text-anchor="end" class="mono secondary small">08 OCT 2026</text>
+  <text x="1552" y="84" text-anchor="end" class="mono secondary small">STATIC CONCEPT · SYNTHETIC READINGS</text>
+
+  <rect x="48" y="120" width="1504" height="46" rx="8" fill="#191817" stroke="#3a3734"/>
+  <text x="69" y="149" class="secondary small">MENU BAR / FULL</text>
+  <text x="350" y="149" class="mono" font-size="18">LTE BAND 3 | SINR 8 | RSRQ −9 | RSRP −96 | RSSI 23</text>
+  <circle cx="1519" cy="143" r="4" fill="#abc794"/>
+
+  <rect x="48" y="198" width="1060" height="784" rx="12" fill="#111110" stroke="#4a4540"/>
+  <path d="M60 198 H1096 Q1108 198 1108 210 V244 H48 V210 Q48 198 60 198Z" fill="#22201e"/>
+  <circle cx="70" cy="221" r="6" fill="#ef625b"/><circle cx="91" cy="221" r="6" fill="#efbb46"/><circle cx="112" cy="221" r="6" fill="#67bd66"/>
+  <text x="578" y="226" text-anchor="middle" font-size="14" font-weight="500">BiQuad Monitor</text>
+  <path d="M48 244 H210 V982 H60 Q48 982 48 970Z" fill="#191817"/>
+  <path d="M210 244 V982" class="rule"/>
+  <text x="68" y="285" class="mono secondary label">WORKSPACE</text>
+  <rect x="60" y="304" width="138" height="37" rx="5" fill="#34291f"/>
+  <rect x="60" y="313" width="3" height="19" rx="1" fill="#ef7a3c"/>
+  <circle cx="79" cy="322" r="4" fill="#ef7a3c"/>
+  <text x="96" y="328" class="body" font-weight="600">Live</text>
+  <text x="76" y="374" class="secondary body">Antenna Lab</text>
+  <text x="76" y="421" class="secondary body">Sessions</text>
+  <text x="76" y="468" class="secondary body">Diagnostics</text>
+  <path d="M68 500 H190" class="rule"/>
+  <text x="68" y="534" class="mono secondary label">ROUTER</text>
+  <text x="68" y="564" class="body">Cudy LT500</text>
+  <circle cx="72" cy="588" r="4" fill="#abc794"/>
+  <text x="85" y="593" class="secondary small">Cellular connected</text>
+  <text x="68" y="889" class="secondary body">Settings</text>
+  <rect x="68" y="920" width="120" height="29" rx="4" fill="#22201e" stroke="#3a3734"/>
+  <text x="128" y="940" text-anchor="middle" class="small">Compact tuner ↗</text>
+
+  <text x="234" y="283" font-size="22" font-weight="600">Live measurements</text>
+  <circle cx="689" cy="276" r="4" fill="#abc794"/>
+  <text x="701" y="281" class="secondary small">Fresh · 2 seconds ago</text>
+  <rect x="234" y="309" width="640" height="112" rx="6" fill="#191817" stroke="#3a3734"/>
+  <path d="M394 309 V421 M554 309 V421 M714 309 V421" class="rule"/>
+  <text x="251" y="335" class="mono secondary small">SINR</text><text x="371" y="335" text-anchor="end" class="secondary small">dB</text>
+  <text x="251" y="383" class="mono" font-size="38">8</text><text x="251" y="406" class="green small">60s median 8.6</text>
+  <text x="411" y="335" class="mono secondary small">RSRQ</text><text x="531" y="335" text-anchor="end" class="secondary small">dB</text>
+  <text x="411" y="383" class="mono" font-size="38">−9</text><text x="411" y="406" class="secondary small">60s median −9.2</text>
+  <text x="571" y="335" class="mono secondary small">RSRP</text><text x="691" y="335" text-anchor="end" class="secondary small">dBm</text>
+  <text x="571" y="383" class="mono" font-size="38">−96</text><text x="571" y="406" class="secondary small">60s median −96</text>
+  <text x="731" y="335" class="mono secondary small">RSSI</text><text x="851" y="335" text-anchor="end" class="secondary small">index</text>
+  <text x="731" y="383" class="mono" font-size="38">23</text><text x="731" y="406" class="secondary small">Router units</text>
+  <text x="234" y="451" class="mono secondary small">LTE BAND 3  /  CELL DEMO-A  /  POLLING 5s</text>
+  <path d="M234 468 H874" class="rule"/>
+  <text x="234" y="496" class="mono" font-size="14">SIGNAL QUALITY</text>
+  <text x="430" y="496" class="green small">SINR · dB</text>
+  <text x="737" y="496" class="secondary small">1m</text><rect x="766" y="476" width="40" height="27" rx="4" fill="#34291f"/>
+  <text x="786" y="495" text-anchor="middle" class="orange small">5m</text><text x="823" y="496" class="secondary small">30m</text>
+  <path d="M273 524 H866 M273 568 H866 M273 612 H866" class="grid"/>
+  <text x="237" y="529" class="mono muted small">20</text><text x="237" y="573" class="mono muted small">10</text><text x="245" y="617" class="mono muted small">0</text>
+  <rect x="569" y="517" width="113" height="104" fill="#ef7a3c" opacity="0.06"/>
+  <path d="M569 517 V621" stroke="#ef7a3c" stroke-dasharray="3 5"/>
+  <text x="578" y="537" class="orange" font-size="11">POSITION B</text>
+  <path d="M273 590 L289 594 L307 588 L325 591 L343 586 L361 596 L379 586 L397 589 L415 581 L433 590 L451 587 L469 585 L487 571 L505 577 L523 564 L541 571 L559 564 L577 567 L595 573 L613 559 L631 568 L649 565 L667 578 L685 573 L703 568 L721 580 L739 578 L757 569 L775 574 L793 571 L811 575 L829 569 L847 577 L866 578" fill="none" stroke="#abc794" stroke-width="2.5" stroke-linejoin="round"/>
+  <circle cx="866" cy="578" r="4" fill="#abc794"/>
+  <text x="273" y="641" class="mono muted small">00:55</text><text x="532" y="641" class="mono muted small">00:57:30</text><text x="866" y="641" text-anchor="end" class="mono muted small">01:00</text>
+
+  <path d="M234 660 H874" class="rule"/>
+  <text x="234" y="689" class="mono" font-size="14">REFERENCE SIGNAL POWER</text><text x="522" y="689" class="cyan small">RSRP · dBm</text>
+  <path d="M273 716 H866 M273 754 H866 M273 792 H866" class="grid"/>
+  <text x="234" y="721" class="mono muted" font-size="12">−80</text><text x="234" y="759" class="mono muted" font-size="12">−100</text><text x="234" y="797" class="mono muted" font-size="12">−120</text>
+  <path d="M273 761 L293 760 L313 764 L333 759 L353 761 L373 756 L393 759 L413 757 L433 758 L453 760 L473 754 L493 749 L513 750 L533 747 L553 750 L573 748 L593 749 L613 746 L633 750 L653 747 L673 748 L693 745 L713 749 L733 747 L753 746 L773 750 L793 747 L813 749 L833 746 L853 748 L866 746" fill="none" stroke="#8ec9d2" stroke-width="2.5"/>
+  <text x="273" y="821" class="mono muted small">00:55</text><text x="866" y="821" text-anchor="end" class="mono muted small">01:00</text>
+  <path d="M234 844 H874" class="rule"/>
+  <text x="234" y="870" class="mono secondary label">EVENTS</text>
+  <text x="234" y="900" class="mono secondary small">00:57:30</text><circle cx="305" cy="895" r="3" fill="#ef7a3c"/><text x="317" y="900" class="small">Position B · trial recording started</text>
+  <text x="234" y="927" class="mono secondary small">00:55</text><circle cx="305" cy="922" r="3" fill="#abc794"/><text x="317" y="927" class="small">Baseline saved · same band and cell</text>
+  <text x="234" y="964" class="secondary" font-size="11">History saved locally</text><text x="874" y="964" text-anchor="end" class="secondary" font-size="11">Cell identifiers here are fictional</text>
+
+  <rect x="895" y="244" width="212" height="725" fill="#191817"/>
+  <path d="M895 244 V982" class="rule"/>
+  <text x="913" y="281" class="mono secondary label">TRIAL INSPECTOR</text>
+  <text x="913" y="321" font-size="21" font-weight="600">Position B</text>
+  <text x="913" y="348" class="secondary small">Double BiQuad pair</text>
+  <path d="M913 369 H1090" class="rule"/>
+  <text x="913" y="396" class="secondary small">Compared with</text><text x="913" y="420" class="body">Position A</text>
+  <text x="913" y="462" class="secondary small">Median SINR delta</text><text x="913" y="508" class="mono green" font-size="29">+2.8 dB</text>
+  <text x="913" y="538" class="secondary small">Observed difference</text><text x="913" y="562" class="secondary small">Same band / cell</text>
+  <path d="M913 585 H1090" class="rule"/>
+  <text x="913" y="613" class="secondary small">Valid samples</text><text x="1090" y="613" text-anchor="end" class="mono small">30 / 30</text>
+  <text x="913" y="646" class="secondary small">Elapsed</text><text x="1090" y="646" text-anchor="end" class="mono small">02:30</text>
+  <text x="913" y="679" class="secondary small">Orientation</text><text x="1090" y="679" text-anchor="end" class="mono small">Manual</text>
+  <text x="913" y="727" class="mono secondary label">NOTE</text><text x="913" y="754" class="small">Raised by 20 cm.</text><text x="913" y="777" class="small">Cable unchanged.</text>
+  <rect x="913" y="856" width="176" height="35" rx="5" fill="#ef7a3c"/>
+  <text x="1001" y="879" text-anchor="middle" font-size="13" style="fill:#111110" font-weight="600">Compare trials</text>
+  <rect x="913" y="902" width="176" height="34" rx="5" fill="#22201e" stroke="#3a3734"/>
+  <text x="1001" y="924" text-anchor="middle" class="small">Add note</text>
+
+  <text x="1144" y="188" class="mono secondary label">COMPACT TUNER</text>
+  <rect x="1144" y="198" width="408" height="554" rx="12" fill="#191817" stroke="#4a4540"/>
+  <path d="M1156 198 H1540 Q1552 198 1552 210 V242 H1144 V210 Q1144 198 1156 198Z" fill="#22201e"/>
+  <circle cx="1165" cy="220" r="5" fill="#ef625b"/><circle cx="1184" cy="220" r="5" fill="#efbb46"/><circle cx="1203" cy="220" r="5" fill="#67bd66"/>
+  <text x="1365" y="225" text-anchor="middle" class="small">BiQuad Monitor</text>
+  <text x="1167" y="279" class="body" font-weight="600">Cudy LT500 · LTE Band 3</text><circle cx="1527" cy="274" r="4" fill="#abc794"/>
+  <text x="1167" y="314" class="mono secondary small">SINR / SIGNAL QUALITY</text>
+  <text x="1163" y="398" class="mono" font-size="86">8</text><text x="1230" y="397" class="secondary" font-size="23">dB</text>
+  <text x="1526" y="369" text-anchor="end" class="mono green" font-size="18">+2.8 dB</text><text x="1526" y="394" text-anchor="end" class="secondary small">median vs baseline</text>
+  <path d="M1167 432 H1527 M1167 462 H1527" class="grid"/>
+  <path d="M1167 460 L1185 454 L1203 458 L1221 450 L1239 452 L1257 443 L1275 452 L1293 448 L1311 434 L1329 443 L1347 440 L1365 449 L1383 442 L1401 438 L1419 447 L1437 445 L1455 437 L1473 444 L1491 440 L1509 446 L1527 445" fill="none" stroke="#abc794" stroke-width="2.5"/>
+  <text x="1167" y="487" class="mono muted" font-size="11">60 seconds</text><text x="1527" y="487" text-anchor="end" class="mono muted" font-size="11">Now</text>
+  <path d="M1167 506 H1527" class="rule"/>
+  <text x="1167" y="537" class="mono secondary small">RSRQ</text><text x="1287" y="537" class="mono secondary small">RSRP</text><text x="1411" y="537" class="mono secondary small">RSSI</text>
+  <text x="1167" y="571" class="mono" font-size="23">−9</text><text x="1210" y="571" class="secondary small">dB</text>
+  <text x="1287" y="571" class="mono" font-size="23">−96</text><text x="1341" y="571" class="secondary small">dBm</text>
+  <text x="1411" y="571" class="mono" font-size="23">23</text><text x="1453" y="571" class="secondary small">index</text>
+  <path d="M1167 591 H1527" class="rule"/>
+  <text x="1167" y="621" class="body">Position B</text><text x="1527" y="621" text-anchor="end" class="mono orange small">RECORDING 02:30</text>
+  <rect x="1167" y="640" width="170" height="35" rx="5" fill="#ef7a3c"/>
+  <text x="1252" y="663" text-anchor="middle" class="small" style="fill:#111110" font-weight="600">Finish trial</text>
+  <rect x="1350" y="640" width="177" height="35" rx="5" fill="#22201e" stroke="#3a3734"/>
+  <text x="1438" y="663" text-anchor="middle" class="small">Add note</text>
+  <text x="1167" y="720" class="secondary small">Fresh · 2 seconds ago</text><text x="1527" y="720" text-anchor="end" class="secondary small">Open workspace ↗</text>
+
+  <rect x="1144" y="782" width="408" height="200" rx="8" fill="#191817" stroke="#3a3734"/>
+  <text x="1167" y="815" class="mono secondary label">ANTENNA LAB / COMPARISON</text>
+  <text x="1167" y="851" class="secondary small">Position</text><text x="1370" y="851" text-anchor="end" class="secondary small">SINR median</text><text x="1526" y="851" text-anchor="end" class="secondary small">Coverage</text>
+  <path d="M1167 864 H1527" class="rule"/>
+  <text x="1167" y="892" class="body">A · baseline</text><text x="1370" y="892" text-anchor="end" class="mono body">5.8 dB</text><text x="1526" y="892" text-anchor="end" class="mono secondary body">100%</text>
+  <text x="1167" y="925" class="body">B · raised</text><text x="1370" y="925" text-anchor="end" class="mono green body">8.6 dB</text><text x="1526" y="925" text-anchor="end" class="mono secondary body">100%</text>
+  <text x="1167" y="958" class="secondary small">Same band / cell · illustrative comparison</text>
+  <text x="48" y="1021" class="secondary body">Compact for aiming. A full workspace for reviewing experiments.</text>
+  <text x="48" y="1056" class="mono muted small">PROPOSAL ONLY / ALL CHARTS AND COMPARISONS ARE SYNTHETIC / NO THIRD-PARTY ASSETS</text>
+</svg>

@@ -16,10 +16,10 @@ public enum MonitorError: LocalizedError {
         case .loginForm: return "The router returned an unsupported sign-in form. No password was submitted."
         case .cellularFormat(let details): return "Cellular page could not be read. " + details
         case .session(let details): return "Router sign-in session was not established. " + details
-        case .certificate: return "HTTPS certificate is not trusted or TLS could not be established. Your Cudy uses a self-signed certificate. Turn off Use HTTPS to match your working HTTP admin page, or configure a trusted certificate."
+        case .certificate: return "HTTPS certificate is not trusted or TLS could not be established. Select the same HTTP / HTTPS service used by your browser, or configure a trusted certificate."
         case .timeout: return "Router connection timed out. Check the IP and local network connection."
         case .unreachable: return "Cannot reach the selected router service. Check the IP and HTTP / HTTPS selection."
-        case .localPermission: return "Network access was denied. Check macOS System Settings → Privacy & Security → Local Network for BiQuad Monitor."
+        case .localPermission: return "Network access is unavailable. Check your connection and macOS System Settings → Privacy & Security → Local Network for BiQuad Monitor."
         case .serverStatus(let status): return "Router returned HTTP \(status). The connection reached the router, but the request was rejected."
         }
     }
@@ -36,7 +36,7 @@ public enum MonitorError: LocalizedError {
     }
 }
 
-public struct SignalSample: Equatable {
+public struct SignalSample: Equatable, Codable, Sendable {
     public let date: Date
     public let sinr: Double?
     public let rsrq: Double?
@@ -46,12 +46,15 @@ public struct SignalSample: Equatable {
     public let cell: String
     public let carrier: String
     public let connected: Bool
-    public init(date: Date = Date(), sinr: Double?, rsrq: Double?, rsrp: Double?, rssi: Double?, band: String = "—", cell: String = "—", carrier: String = "—", connected: Bool = true) {
+    public let rssiUnits: RSSIUnit
+    public let details: [String: String]
+    public init(date: Date = Date(), sinr: Double?, rsrq: Double?, rsrp: Double?, rssi: Double?, band: String = "—", cell: String = "—", carrier: String = "—", connected: Bool = true, rssiUnits: RSSIUnit = .rawIndex, details: [String: String] = [:]) {
         self.date = date; self.sinr = sinr; self.rsrq = rsrq; self.rsrp = rsrp; self.rssi = rssi
         self.band = band; self.cell = cell; self.carrier = carrier; self.connected = connected
+        self.rssiUnits = rssiUnits; self.details = details
     }
     public var values: [Double?] { [sinr, rsrq, rsrp, rssi] }
-    public var rssiUnit: String { rssi.map { $0 >= 0 ? "raw index" : "dBm" } ?? "" }
+    public var rssiUnit: String { rssi == nil ? "" : rssiUnits.rawValue }
 }
 
 public enum RouterHTML {
@@ -120,8 +123,13 @@ public enum RouterHTML {
             if key == "RSSI" && value == 99 { return nil }
             return value
         }
-        let sample = SignalSample(date: date, sinr: number("SINR", range: -40...60), rsrq: number("RSRQ", range: -40...0), rsrp: number("RSRP", range: -160 ... -20), rssi: number("RSSI", range: -150...31), band: table["BAND"] ?? "—", cell: table["CELL ID"] ?? "—", carrier: table["NETWORK TYPE"] ?? "—", connected: table["STATUS"]?.lowercased() == "connected")
-        guard sample.values.contains(where: { $0 != nil }) else { throw MonitorError.format }
+        // LT500 index values are 0...31; dBm requires an explicit unit from the page.
+        let rssiUnits: RSSIUnit = table["RSSI"]?.lowercased().contains("dbm") == true ? .dBm : .rawIndex
+        let safeKeys = ["PCID", "MCC", "MNC", "MODE", "UL BANDWIDTH", "DL BANDWIDTH", "CONNECTED TIME", "UPLOAD / DOWNLOAD"]
+        let details = table.filter { safeKeys.contains($0.key) && $0.value.count <= 160 }
+        let status = table["STATUS"]?.lowercased()
+        let sample = SignalSample(date: date, sinr: number("SINR", range: -40...60), rsrq: number("RSRQ", range: -40...0), rsrp: number("RSRP", range: -160 ... -20), rssi: number("RSSI", range: rssiUnits == .dBm ? -150...0 : 0...31), band: String((table["BAND"] ?? "—").prefix(40)), cell: String((table["CELL ID"] ?? "—").prefix(80)), carrier: String((table["NETWORK TYPE"] ?? "—").prefix(120)), connected: status == "connected", rssiUnits: rssiUnits, details: details)
+        guard sample.values.contains(where: { $0 != nil }) || status == "disconnected" else { throw MonitorError.format }
         return sample
     }
 }
