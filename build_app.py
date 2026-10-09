@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a source-stamped local preview, native or Universal. Never accesses signing keys."""
+"""Build a source-stamped preview or unsigned release. Never accesses signing keys."""
 import argparse
 import hashlib
 import json
@@ -20,23 +20,27 @@ def run(*args: str, capture: bool = False) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--arch", choices=["native", "universal"], default="universal")
+    parser.add_argument("--distribution", choices=["preview", "unsigned"], default="preview")
     args = parser.parse_args()
+    commit = run("git", "rev-parse", "HEAD", capture=True)
+    dirty = bool(run("git", "status", "--porcelain", "--untracked-files=no", capture=True))
+    if args.distribution == "unsigned" and dirty:
+        raise SystemExit("Unsigned release requires a clean tracked checkout")
+    distribution = "unsigned release; ad-hoc signature; not notarized" if args.distribution == "unsigned" else "ad-hoc development preview; not notarized"
     arch_args = ["--arch", "x86_64", "--arch", "arm64"] if args.arch == "universal" else []
     run("swift", "build", "-c", "release", *arch_args)
     binary_dir = Path(run("swift", "build", "-c", "release", *arch_args, "--show-bin-path", capture=True))
-    app = ROOT / "dist" / "preview" / "BiQuad Monitor.app"
+    app = ROOT / "dist" / ("release" if args.distribution == "unsigned" else "preview") / "BiQuad Monitor.app"
     contents = app / "Contents"
     (contents / "MacOS").mkdir(parents=True, exist_ok=True)
     (contents / "Resources").mkdir(exist_ok=True)
     executable = contents / "MacOS" / "BiQuadMonitor"
     shutil.copy2(binary_dir / "BiQuadMonitor", executable)
     shutil.copy2(ROOT / "Resources/AppIcon.icns", contents / "Resources/AppIcon.icns")
-    commit = run("git", "rev-parse", "HEAD", capture=True)
-    dirty = bool(run("git", "status", "--porcelain", "--untracked-files=no", capture=True))
     info = {
         "CFBundleName": "BiQuad Monitor", "CFBundleDisplayName": "BiQuad Monitor",
         "CFBundleIdentifier": "local.blackterminal.BiQuadMonitor",
-        "CFBundleVersion": "6", "CFBundleShortVersionString": VERSION,
+        "CFBundleVersion": "7", "CFBundleShortVersionString": VERSION,
         "CFBundleExecutable": "BiQuadMonitor", "CFBundlePackageType": "APPL",
         "CFBundleIconFile": "AppIcon",
         "LSUIElement": True, "LSMinimumSystemVersion": "13.0",
@@ -46,7 +50,7 @@ def main() -> None:
         # ATS alone cannot express an RFC1918 subnet exception.
         "NSAppTransportSecurity": {"NSAllowsLocalNetworking": True, "NSAllowsArbitraryLoads": True},
         "BiQuadSourceCommit": commit, "BiQuadSourceDirty": dirty,
-        "BiQuadDistribution": "ad-hoc development preview; not notarized",
+        "BiQuadDistribution": distribution,
     }
     with (contents / "Info.plist").open("wb") as stream:
         plistlib.dump(info, stream)
@@ -56,7 +60,7 @@ def main() -> None:
     if args.arch == "universal" and set(architectures) != {"x86_64", "arm64"}:
         raise SystemExit("Missing required Universal binary slice")
     metadata = {"version": VERSION, "commit": commit, "dirty": dirty, "architectures": architectures,
-                "sha256": hashlib.sha256(executable.read_bytes()).hexdigest(), "distribution": "ad-hoc preview"}
+                "sha256": hashlib.sha256(executable.read_bytes()).hexdigest(), "distribution": distribution}
     (app.parent / "build.json").write_text(json.dumps(metadata, indent=2) + "\n")
     print(app)
 

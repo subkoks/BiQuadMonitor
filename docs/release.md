@@ -1,6 +1,6 @@
 # Release and acceptance
 
-The 0.2.0 build is a development preview. A public source repository or downloadable CI artifact is not a stable-release acceptance result.
+Version 0.2.0 is distributed as an **unsigned Universal release**, by explicit owner decision on 2026-10-09. It has an ad-hoc integrity signature, no Developer ID signature and no notarization. Preview builds remain available for development. Source publication and CI artifacts alone do not establish physical-device acceptance.
 
 ## Reproducible local preview
 
@@ -31,7 +31,7 @@ Record PASS, FAIL or NOT RUN for each gate against the exact candidate commit an
 | Saved experiments | Record two real trials, restart, reopen them, compare matching contexts and export every stored sample |
 | Soak | Collect for eight hours; inspect UI responsiveness, resource use, database growth, gaps and export completeness |
 | Platform coverage | Execute on Intel and Apple Silicon; test the declared minimum macOS runtime and a current macOS version |
-| Distribution | Validate Developer ID signing, Hardened Runtime, notarization, stapling and clean downloaded-app launch |
+| Distribution | Validate For trusted Apple distribution: Developer ID signing, Hardened Runtime, notarization, stapling and clean downloaded-app launch. The owner explicitly chose unsigned distribution for 0.2.0 |
 
 A live acceptance password must be supplied through the app or an explicitly authorized standard-input mechanism. Never place it in shell arguments, environment variables, fixtures, logs or GitHub Actions. CI uses synthetic fixtures and has no access to the private router.
 
@@ -45,6 +45,18 @@ For the existing diagnostic executable mode, `--live-smoke-test` checks login an
 4. Obtain the release decision for that concrete candidate and evidence.
 5. Publish only the app artifact, checksums, source reference, release notes and safe evidence.
 
-Developer ID and notarization need separately provisioned credentials. Those credentials have not been inspected or configured for this preview. If a gate remains open, label the artifact as a development preview and state the missing evidence; do not call it a stable release.
+Developer ID and notarization need separately provisioned credentials. They have not been inspected or configured. Version 0.2.0 explicitly uses unsigned distribution instead; release notes must disclose this and all unverified platform/stability gates. Do not claim Apple-trusted distribution or full platform certification.
+
+## Unsigned 0.2.0 packaging
+
+From the reviewed, clean `main` commit:
+
+```sh
+python3 build_app.py --distribution unsigned
+ditto -c -k --keepParent 'dist/release/BiQuad Monitor.app' dist/release/BiQuad-Monitor-0.2.0-universal-unsigned.zip
+python3 scripts/publication_check.py --archive dist/release/BiQuad-Monitor-0.2.0-universal-unsigned.zip
+```
+
+Keep `build.json` and `SHA256SUMS` alongside the archive. Publish an annotated `v0.2.0` tag at that exact commit. The archive contains only the application. Normal macOS downloaded-app policy may block unsigned software; use Apple's per-app Open Anyway flow if you choose to run it. Never disable Gatekeeper globally.
 
 Keep the prior working app and a backup of measurement data before upgrading. Do not downgrade a database by editing its schema version. An incompatible database should remain intact for recovery or a deliberate migration.

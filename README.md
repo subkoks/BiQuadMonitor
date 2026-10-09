@@ -2,7 +2,9 @@
 
 A native macOS menu-bar monitor and antenna experiment workspace for supported Cudy cellular routers. Read SINR, RSRQ, RSRP and RSSI directly from the router, record antenna trials, and compare saved measurements.
 
-**0.2.0 is a development preview.** It builds for Intel and Apple Silicon as a Universal app. The local build is ad-hoc signed, not notarized; current device and platform validation is described in [Compatibility](docs/compatibility.md).
+**0.2.0 is an unsigned Universal release for Intel and Apple Silicon.** Download it from [GitHub Releases](https://github.com/subkoks/BiQuadMonitor/releases/latest). It has an ad-hoc integrity signature, no Developer ID signature and no notarization. macOS may block its first launch; use the per-app **Open Anyway** option in Privacy & Security if you choose to run it. Current evidence and unverified platform/stability checks are listed in [Compatibility](docs/compatibility.md).
+
+To install, unzip the download and move **BiQuad Monitor.app** to Applications. Quit any older running copy before opening the new version. Keep the previous app and your local measurement history for rollback.
 
 ```text
 LTE BAND 3 | SINR 8 | RSRQ −9 | RSRP −96 | RSSI 23
