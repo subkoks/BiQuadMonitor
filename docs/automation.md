@@ -7,11 +7,13 @@ One owner-approved task becomes one worktree, one reviewable diff and one eviden
 Copy `docs/task-example.json` outside the tracked source or into ignored `private/`, edit the goal, permitted paths and acceptance, and explicitly set `approved` to true after owner review.
 
 ```sh
-python3 scripts/run_task.py private/my-task.json        # validate and show scope
-python3 scripts/run_task.py private/my-task.json --run  # execute that approved task
+python3 -B scripts/run_task.py private/my-task.json        # validate and show scope
+python3 -B scripts/run_task.py private/my-task.json --run  # execute with the default gpt-6-astra
 ```
 
-The runner uses the existing Codex login and profile, workspace-write sandbox, structured final result, one active-run lock and a maximum 30-minute agent duration. It checks the task manifest before execution, rejecting malformed, empty, nonstring, absolute and escaping paths. It keeps the worktree and private report for review. It never commits, pushes, merges or publishes a release. No cloud model credentials or scheduler are installed.
+The runner uses the existing **ChatGPT login**, with explicit per-run OpenAI provider settings. It passes `--ignore-user-config`, `model_provider="openai"`, `forced_login_method="chatgpt"`, `approval_policy="never"` and the `workspace-write` sandbox. It does not inherit user provider overrides, edit global configuration or inspect authentication files. AGENTS instructions and execpolicy rules remain enabled; `--ignore-rules` is never passed. The default model is `gpt-6-astra`; select another authorized OpenAI model for one run with `--model MODEL`. The selected model and provider appear in the plan and run evidence.
+
+The runner requests a structured final result, keeps one active-run lock and limits agent execution to at most 30 minutes. It checks the task manifest before execution, rejecting malformed, empty, nonstring, absolute and escaping paths. It keeps the worktree and private report for review. It never commits, pushes, merges or publishes a release. No credentials or scheduler are installed.
 
 Before starting Codex, it captures `scripts/check.py` and `scripts/publication_check.py` from the exact base commit as read-only harness files outside the task worktree. Acceptance invokes that copy with an explicit project root; changing the worktree's check script cannot replace the acceptance harness. Hashes are checked before and after acceptance. Commit these runner changes before the first pilot so the base commit contains the compatible harness.
 

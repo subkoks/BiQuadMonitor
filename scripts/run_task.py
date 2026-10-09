@@ -14,6 +14,23 @@ from pathlib import Path
 from check import interruption_signals, run_command, write_evidence
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_MODEL = "gpt-6-astra"
+
+
+def model_name(value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,127}", value):
+        raise ValueError("Model must be a nonempty model identifier")
+    return value
+
+
+def agent_command(worktree, schema_file, final, model=DEFAULT_MODEL):
+    # Per-run overrides preserve the existing login without inheriting provider
+    # aliases or changing any user configuration. Rules and AGENTS remain loaded.
+    return ["codex", "exec", "--ignore-user-config", "--model", model_name(model),
+            "-c", 'model_provider="openai"', "-c", 'forced_login_method="chatgpt"',
+            "-c", 'approval_policy="never"', "--sandbox", "workspace-write",
+            "--ephemeral", "--json", "--output-schema", str(schema_file),
+            "--output-last-message", str(final), "-C", str(worktree), "-"]
 
 
 def git(*args, cwd=ROOT):
@@ -102,10 +119,12 @@ def audit_scope(worktree, commit, allowed):
     return sorted(changed)
 
 
-def run(task, execute):
+def run(task, execute, model=DEFAULT_MODEL):
+    model = model_name(model)
     commit = git("rev-parse", "HEAD")
     run_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime()) + "-" + task["id"] + "-" + uuid.uuid4().hex[:8]
-    print(json.dumps({"task": task["id"], "baseCommit": commit, "maxSeconds": task["maxSeconds"], "execution": execute}, indent=2))
+    print(json.dumps({"task": task["id"], "baseCommit": commit, "maxSeconds": task["maxSeconds"], "model": model,
+                      "provider": "openai", "loginMethod": "chatgpt", "execution": execute}, indent=2))
     if not execute:
         return 0
     private = ROOT / "private/automation"
@@ -117,7 +136,8 @@ def run(task, execute):
         raise SystemExit("Another run is active; inspect its evidence before clearing the lock")
     report_dir = private / run_id
     worktree = ROOT.parent / ("BiQuadMonitor-task-" + run_id)
-    result = {"task": task["id"], "run": run_id, "baseCommit": commit, "status": "RUNNING", "gates": [], "worktree": str(worktree)}
+    result = {"task": task["id"], "run": run_id, "baseCommit": commit, "status": "RUNNING", "gates": [], "worktree": str(worktree),
+              "model": model, "provider": "openai", "loginMethod": "chatgpt"}
     result_path = report_dir / "result.json"
     started = time.monotonic()
     try:
@@ -139,7 +159,7 @@ Goal: {task['goal']}
 Allowed paths: {json.dumps(task['allowedPaths'])}
 Acceptance: {task['acceptance']}
 You are not alone: preserve unrelated work. Do not read credentials, .env files, private data, router backups, other projects, or transcript archives. Do not access the router, change workstation settings, install services, perform paid API calls, commit, push, merge or release. No automatic retry loop. After two failed attempts with one approach, change strategy or report blocked. Return structured evidence, not an unsupported success claim.'''
-        command = ["codex", "exec", "--sandbox", "workspace-write", "--ephemeral", "--json", "--output-schema", str(schema_file), "--output-last-message", str(final), "-C", str(worktree), "-"]
+        command = agent_command(worktree, schema_file, final, model)
         with (report_dir / "private-events.jsonl").open("w") as log:
             os.chmod(log.name, 0o600)
             agent = run_command(command, cwd=worktree, stdout=log, input_text=prompt, timeout=task["maxSeconds"])
@@ -195,10 +215,11 @@ You are not alone: preserve unrelated work. Do not read credentials, .env files,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", type=Path)
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="OpenAI model for this run (default: gpt-6-astra)")
     parser.add_argument("--run", action="store_true", help="Execute the specifically approved task using existing Codex sign-in")
     args = parser.parse_args()
     try:
         with interruption_signals():
-            raise SystemExit(run(load_task(args.task), args.run))
+            raise SystemExit(run(load_task(args.task), args.run, model=args.model))
     except (ValueError, OSError) as error:
         raise SystemExit(str(error))

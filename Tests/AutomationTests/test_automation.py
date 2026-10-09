@@ -55,6 +55,26 @@ class AutomationTests(unittest.TestCase):
                                     "acceptance": "The fixture check must pass", "maxSeconds": 60}))
         return path
 
+    def test_agent_command_uses_chatgpt_provider_without_user_overrides(self):
+        command = run_task.agent_command(self.root, self.root / "schema.json", self.root / "result.json")
+        self.assertEqual(command[:5], ["codex", "exec", "--ignore-user-config", "--model", "gpt-6-astra"])
+        overrides = [command[index + 1] for index, value in enumerate(command) if value == "-c"]
+        self.assertEqual(overrides, ['model_provider="openai"', 'forced_login_method="chatgpt"', 'approval_policy="never"'])
+        self.assertEqual(command[command.index("--sandbox") + 1], "workspace-write")
+        self.assertEqual(command[command.index("-C") + 1], str(self.root))
+        self.assertNotIn("--ignore-rules", command)
+        self.assertNotIn("--dangerously-bypass-approvals-and-sandbox", command)
+        self.assertEqual(command[-1], "-")
+
+    def test_explicit_model_selection_preserves_provider_and_sandbox(self):
+        command = run_task.agent_command(self.root, "schema.json", "result.json", model="gpt-6-sol")
+        self.assertEqual(command[command.index("--model") + 1], "gpt-6-sol")
+        self.assertIn('model_provider="openai"', command)
+        self.assertIn("workspace-write", command)
+        for model in ("", "--oss", "bad model", None):
+            with self.subTest(model=model), self.assertRaises(ValueError):
+                run_task.agent_command(self.root, "schema.json", "result.json", model=model)
+
     def test_manifest_rejects_empty_nonstring_and_escaping_paths(self):
         for paths in ([""], [None], [42], [{}], ["."], ["Sources/../private"], ["/Sources"], ["Sources/\x00bad"]):
             with self.subTest(paths=paths), self.assertRaises(ValueError):
