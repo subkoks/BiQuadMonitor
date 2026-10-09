@@ -60,6 +60,8 @@ Pause stops polling and ends an active trial as incomplete while preserving its 
 
 Positive change means a higher reading. The change column is suppressed if either trial has unknown or changing band/cell/units, or if the two trials do not match. This prevents treating a network handover as an antenna gain. Sample counts are shown; missing values are excluded separately for each metric.
 
+**Hypothetical example:** Two completed trials match on LTE band 3, the same cell and SINR units of dB throughout. A reference median SINR of 8 dB and candidate median of 11 dB give a +3 dB change. This alone does not prove higher throughput.
+
 **Stop trial · keep partial data** preserves an incomplete trial. Experiment sessions are pinned automatically. Older trials can be selected through **Sessions → Inspect** and then compared in Antenna Lab.
 
 ## History and export

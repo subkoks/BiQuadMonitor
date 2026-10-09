@@ -45,6 +45,8 @@ The package uses system SwiftUI, AppKit, Swift Charts and SQLite. Full Xcode and
 
 The [CI run for `b1e4454`](https://github.com/subkoks/BiQuadMonitor/actions/runs/37838502054) passed on both Intel (`macos-26-intel`) and Apple Silicon (`macos-26`) using Xcode 26.6. Each architecture passed the 45 offline tests, window/coordinator smoke and the native XCUITest trial/settings/pause flow. The Universal preview job also passed.
 
+The follow-up [CI run for `1be440e`](https://github.com/subkoks/BiQuadMonitor/actions/runs/37903118515) also passed both native architectures, UI interaction and Universal packaging with the original app icon and hardened workflow checks. Its [CodeQL run](https://github.com/subkoks/BiQuadMonitor/actions/runs/37903118466) passed for all three languages.
+
 These hosted native UI results resolve the interaction-test evidence gap for that commit; they do not grant Local Network access on a user’s Mac or exercise a physical router. Check subsequent commits separately.
 
 ## Packaged live check — 2026-10-09

@@ -23,7 +23,11 @@ Each check run writes a new run ID and `RUNNING` evidence before starting comman
 
 The sandbox, captured harness and post-run checks are **not a complete security boundary**. Builds and tests execute changed project code with the invoking user's permissions, and intentionally detached processes can escape a process group. The runner cannot prove absence of private-data reads, network effects or transient writes. Run only owner-approved work in a trusted checkout and review the resulting diff and evidence. Elapsed time is enforced; this runner does not claim a model-token or monetary budget. Existing account limits still govern usage.
 
-The real-agent pilot remains pending; do not enable recurring runs before that pilot passes. Offline runner regression checks require no Codex invocation or credentials:
+A manual pilot completed on 2026-10-09 from base commit `cd69737`: Astra used the existing ChatGPT sign-in, changed only the approved guide paragraph, and returned `REVIEWABLE` after all captured acceptance gates passed (45 Swift tests, 15 workflow tests and the window/coordinator smoke check). The entire run took about 80 seconds against a 300-second agent limit. Its worktree and private evidence were retained, and the resulting guide change was reviewed separately. This verifies that bounded on-demand path; recurring runs remain disabled.
+
+Authentication and invocation settings follow the [official non-interactive guide](https://learn.chatgpt.com/docs/non-interactive-mode) and [configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference).
+
+Offline runner regression checks require no Codex invocation or credentials:
 
 ```sh
 python3 -B -m unittest discover -s Tests/AutomationTests -v
