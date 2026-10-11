@@ -67,8 +67,8 @@ class AutomationTests(unittest.TestCase):
         self.assertEqual(command[-1], "-")
 
     def test_explicit_model_selection_preserves_provider_and_sandbox(self):
-        command = run_task.agent_command(self.root, "schema.json", "result.json", model="gpt-6-sol")
-        self.assertEqual(command[command.index("--model") + 1], "gpt-6-sol")
+        command = run_task.agent_command(self.root, "schema.json", "result.json", model="gpt-6.1-sol")
+        self.assertEqual(command[command.index("--model") + 1], "gpt-6.1-sol")
         self.assertIn('model_provider="openai"', command)
         self.assertIn("workspace-write", command)
         for model in ("", "--oss", "bad model", None):
