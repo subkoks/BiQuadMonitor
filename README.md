@@ -1,6 +1,15 @@
-# BiQuad Monitor
+<h1>
+  <picture>
+    <source media="(max-width: 600px)" srcset="docs/images/readme/hero-mobile.svg">
+    <img src="docs/images/readme/hero.svg" width="100%" alt="BiQuad Monitor — BLACK.TERMINAL">
+  </picture>
+</h1>
 
-A native macOS menu-bar monitor and antenna experiment workspace for supported Cudy cellular routers. Read SINR, RSRQ, RSRP and RSSI directly from the router, record antenna trials, and compare saved measurements.
+BiQuad Monitor is a native macOS menu-bar monitor and antenna experiment workspace for supported Cudy cellular routers. Read SINR, RSRQ, RSRP and RSSI directly from the router, record antenna trials, and compare saved measurements.
+
+**[Download](#download)** · [Workspace](#what-it-does) · [Build and connect](#build-and-connect) · [Privacy](#data-and-access) · [Development](#development)
+
+## Download
 
 **0.2.0 is an unsigned Universal release for Intel and Apple Silicon.** Download it from [GitHub Releases](https://github.com/subkoks/BiQuadMonitor/releases/latest). It has an ad-hoc integrity signature, no Developer ID signature and no notarization. macOS may block its first launch; use the per-app **Open Anyway** option in Privacy & Security if you choose to run it. Current evidence and unverified platform/stability checks are listed in [Compatibility](docs/compatibility.md).
 
@@ -62,4 +71,8 @@ The first command runs offline unit, transport and storage tests. The check runn
 
 The code uses SwiftUI, AppKit, Swift Charts and system SQLite, with no third-party runtime packages. [Contributing](CONTRIBUTING.md), [Codex + GitHub automation](docs/automation.md), and the [release checklist](docs/release.md) describe the workflow.
 
-Independent project, unaffiliated with Cudy. Source is available under the [MIT License](LICENSE).
+Independent project, unaffiliated with Cudy.
+
+---
+
+<img src="docs/images/readme/dot.svg" width="12" height="12" alt=""> **BLACK.TERMINAL** · [MIT License](LICENSE) · [GitHub](https://github.com/subkoks)
