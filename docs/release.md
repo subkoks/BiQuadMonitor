@@ -31,7 +31,27 @@ Record PASS, FAIL or NOT RUN for each gate against the exact candidate commit an
 | Saved experiments | Record two real trials, restart, reopen them, compare matching contexts and export every stored sample |
 | Soak | Collect for eight hours; inspect UI responsiveness, resource use, database growth, gaps and export completeness |
 | Platform coverage | Execute on Intel and Apple Silicon; test the declared minimum macOS runtime and a current macOS version |
-| Distribution | Validate For trusted Apple distribution: Developer ID signing, Hardened Runtime, notarization, stapling and clean downloaded-app launch. The owner explicitly chose unsigned distribution for 0.2.0 |
+| Distribution | Verify clean downloaded-app launch. Version 0.2.0 uses unsigned distribution. Apple-trusted distribution also requires Developer ID signing, Hardened Runtime, notarization and stapling. |
+
+## Owner-device evidence record
+
+Copy this record for each reviewed candidate. The gate requirements are the [Candidate gates](#candidate-gates); keep detailed captures in the external owner-device evidence sheet and record only a redacted summary or reference here. Use `PASS`, `FAIL` or `NOT RUN` for every result; do not infer a pass from missing evidence.
+
+- **Candidate:** BiQuadMonitor 0.2.0
+- **Source SHA:** `<exact reviewed commit SHA>`
+- **Package SHA-256:** `<package archive SHA-256>`
+- **macOS:** `<version and build>`
+- **CPU architecture:** `<arm64 or x86_64>`
+- **Owner evidence reference:** `<redacted external-sheet or report reference>`
+
+- [ ] **Physical router** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<packaged-app authentication, repeated readings for all four metrics and router-page comparison>`
+- [ ] **Finder and Local Network** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<Finder launch, permission prompt/allow/deny/recovery and subsequent readings>`
+- [ ] **Fault recovery** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<network loss, login expiry, no service, sleep/wake and manual pause; stale-state and source-data outcomes>`
+- [ ] **Window placement** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<visible title bars, resizing and recovery after display reconnect>`
+- [ ] **Saved experiments and export** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<two real trials, restart/reopen, matching-context comparison and complete stored-sample export>`
+- [ ] **Eight-hour soak** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<actual duration, responsiveness, resource/database growth, gaps and export completeness>`
+- [ ] **Platform coverage** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<Intel and Apple Silicon runs, minimum and current macOS versions, and outcomes>`
+- [ ] **Distribution** ([gate](#candidate-gates)) — Result: `<PASS / FAIL / NOT RUN>`; redacted evidence: `<unsigned 0.2.0 signature/notarization state, archive-hash match and clean downloaded-app launch outcome>`
 
 A live acceptance password must be supplied through the app or an explicitly authorized standard-input mechanism. Never place it in shell arguments, environment variables, fixtures, logs or GitHub Actions. CI uses synthetic fixtures and has no access to the private router.
 
